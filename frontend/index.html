@@ -1,0 +1,52 @@
+<!doctype html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="Текущая погода по городу и история ваших запросов. Данные Open-Meteo.">
+  <title>Погода и климат</title><link rel="stylesheet" href="/styles.css">
+  <script src="/app.js" defer></script>
+</head>
+<body>
+  <header class="topbar"><a class="brand" href="/" aria-label="Погода и климат — главная"><span class="brand-icon" aria-hidden="true">☀</span>Погода и климат</a><a class="header-link" href="#source">Об источнике <span aria-hidden="true">↗</span></a></header>
+  <main>
+    <section class="intro"><div><p class="eyebrow">ВАШ ГОРОД. ПОГОДА СЕЙЧАС.</p><h1>Узнайте, что за окном.</h1><p class="lede">Найдите город, посмотрите текущую погоду<br class="desktop"> и сохраните её в истории наблюдений.</p></div><span class="project-tag">Практикум · Docker Compose</span></section>
+    <div id="notice" class="notice" role="status" aria-live="polite" hidden></div>
+    <div class="weather-layout">
+      <section class="panel search-panel" aria-labelledby="search-title">
+        <div class="section-label"><span class="step">01</span><h2 id="search-title">Выберите город</h2></div>
+        <form id="weather-form">
+          <label for="city">Название города</label>
+          <div class="input-wrap"><span aria-hidden="true">⌕</span><input id="city" name="city" minlength="2" maxlength="100" placeholder="Например, Москва" autocomplete="off" required></div>
+          <p class="hint">Можно на русском или латиницей.</p>
+          <button class="primary" id="weather-button" type="submit">Получить погоду <span aria-hidden="true">→</span></button>
+        </form>
+        <div class="quick-cities" aria-label="Быстрый выбор города"><span>Попробуйте</span><button type="button" data-city="Москва">Москва</button><button type="button" data-city="Казань">Казань</button><button type="button" data-city="Berlin">Берлин</button></div>
+        <div id="locations" hidden><h3>Уточните населённый пункт</h3><div id="location-list"></div></div>
+        <div class="search-foot"><span class="tiny-dot" aria-hidden="true"></span>Успешный запрос сохраняется автоматически</div>
+      </section>
+      <section class="weather-panel" aria-labelledby="weather-title" aria-live="polite">
+        <div class="weather-top"><span class="weather-label" id="weather-title">ТЕКУЩАЯ ПОГОДА</span><span id="weather-badge" class="weather-badge">Open-Meteo</span></div>
+        <div id="weather-empty"><div class="sun-illustration" aria-hidden="true"><div class="sun-disc"></div><div class="cloud"></div></div><h2>Как погода в вашем городе?</h2><p>Введите название слева.<br>Здесь появятся температура и погодные условия.</p></div>
+        <div id="weather-result" hidden>
+          <h2 id="result-city"></h2><p id="result-location" class="location"></p>
+          <div class="temperature-line"><strong id="temperature"></strong><span id="weather-symbol" aria-hidden="true">☀</span></div><p id="description"></p>
+          <div class="weather-metrics"><div><span>Ощущается</span><strong id="feels-like"></strong></div><div><span>Влажность</span><strong id="humidity"></strong></div><div><span>Ветер</span><strong id="wind-speed"></strong></div></div>
+          <p id="observed-at" class="weather-time"></p><p class="weather-time">Время показано в часовом поясе вашего браузера.</p>
+        </div>
+        <div class="weather-footer">Погодные модели · <a href="https://open-meteo.com/" target="_blank" rel="noopener noreferrer">Источник данных ↗</a></div>
+      </section>
+    </div>
+    <section class="panel history-panel" aria-labelledby="history-title">
+      <div class="history-heading"><div class="section-label"><span class="step">02</span><div><h2 id="history-title">История запросов <span id="history-count" class="count" hidden></span></h2><p class="subheading">Сохранённая погода и ваши заметки</p></div></div><button id="history-button" class="secondary" type="button"><span aria-hidden="true">↻</span> Загрузить историю</button></div>
+      <form id="filter-form" class="filter-form"><label for="history-filter">Поиск в истории</label><div class="filter-controls"><input id="history-filter" maxlength="100" placeholder="Название города"><button class="secondary" type="submit">Найти</button></div></form>
+      <div id="history-empty" class="history-empty"><span aria-hidden="true">◷</span><h3>Ваши запросы будут здесь</h3><p>Нажмите «Загрузить историю», чтобы прочитать записи из базы данных.</p></div>
+      <div id="history-table-wrap" class="table-wrap" hidden><table><caption class="sr-only">История запросов погоды</caption><thead><tr><th scope="col">Город / время запроса</th><th scope="col">Погода</th><th scope="col">Данные на</th><th scope="col">Заметка</th><th scope="col">Действия</th></tr></thead><tbody id="history-body"></tbody></table></div>
+      <div id="pagination" class="pagination" hidden><span id="page-info"></span><div><button id="previous" class="secondary" type="button">← Назад</button><button id="next" class="secondary" type="button">Далее →</button></div></div>
+    </section>
+    <section id="source" class="source-section"><span class="source-icon" aria-hidden="true">↗</span><div><h2>Откуда берётся погода</h2><p>Источник — официальный API <a href="https://open-meteo.com/" target="_blank" rel="noopener noreferrer">Open-Meteo</a>. Сервис объединяет погодные модели национальных метеослужб. Текущие условия рассчитаны моделями и могут отличаться от показаний ближайшей метеостанции. Названия и координаты городов предоставлены <a href="https://www.geonames.org/" target="_blank" rel="noopener noreferrer">GeoNames</a>.</p><p>Погодные данные: <a href="https://creativecommons.org/licenses/by/4.0/" target="_blank" rel="noopener noreferrer">CC BY 4.0</a>. Значения приведены в °C и м/с. Учебные записи в истории отмечены отдельно.</p></div></section>
+  </main>
+  <footer><span>Погода и климат</span><span>Учебный проект · Вариант 1</span></footer>
+  <dialog id="edit-dialog"><form id="note-form"><h2>Заметка к запросу</h2><p id="note-city"></p><label for="note-text">Ваши наблюдения</label><textarea id="note-text" maxlength="500" rows="5" placeholder="Например, перед прогулкой"></textarea><p class="hint">До 500 символов.</p><p id="note-error" class="dialog-error" role="alert" hidden></p><div class="dialog-actions"><button id="cancel-note" type="button" class="secondary">Отмена</button><button type="submit" class="primary">Сохранить</button></div></form></dialog>
+  <dialog id="delete-dialog"><h2>Удалить запрос?</h2><p id="delete-city"></p><p>Запись и заметка будут удалены из истории.</p><p id="delete-error" class="dialog-error" role="alert" hidden></p><div class="dialog-actions"><button id="cancel-delete" class="secondary" type="button">Отмена</button><button id="confirm-delete" class="danger" type="button">Удалить</button></div></dialog>
+</body>
+</html>

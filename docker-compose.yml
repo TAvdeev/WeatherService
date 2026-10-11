@@ -1,0 +1,76 @@
+name: weather-climate
+services:
+  frontend:
+    build: ./frontend
+    ports:
+      - "127.0.0.1:${FRONTEND_PORT:-8080}:80"
+    depends_on:
+      backend:
+        condition: service_healthy
+    networks: [weather-net]
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "wget", "-q", "--spider", "http://127.0.0.1/health"]
+      interval: 10s
+      timeout: 3s
+      retries: 5
+  backend:
+    build: ./backend
+    environment:
+      DB_HOST: db
+      DB_PORT: 5432
+      DB_NAME: weather
+      DB_USER: weather
+      DB_PASSWORD: ${DB_PASSWORD:-weather_local_lab}
+      WEB_SERVICE_URL: http://web-service:8001
+    ports:
+      - "127.0.0.1:${BACKEND_PORT:-8000}:8000"
+    depends_on:
+      db:
+        condition: service_healthy
+      web-service:
+        condition: service_healthy
+    networks: [weather-net]
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "python", "-c", "import urllib.request; urllib.request.urlopen('http://127.0.0.1:8000/health', timeout=2)"]
+      interval: 10s
+      timeout: 4s
+      retries: 5
+      start_period: 10s
+  db:
+    image: postgres:17-alpine
+    environment:
+      POSTGRES_DB: weather
+      POSTGRES_USER: weather
+      POSTGRES_PASSWORD: ${DB_PASSWORD:-weather_local_lab}
+    volumes:
+      - weather-data:/var/lib/postgresql/data
+      - ./db/init.sql:/docker-entrypoint-initdb.d/01-init.sql:ro
+    networks: [weather-net]
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U $${POSTGRES_USER} -d $${POSTGRES_DB}"]
+      interval: 5s
+      timeout: 3s
+      retries: 15
+      start_period: 10s
+  web-service:
+    build: ./web-service
+    environment:
+      GEOCODING_URL: https://geocoding-api.open-meteo.com/v1
+      WEATHER_URL: https://api.open-meteo.com/v1/forecast
+    ports:
+      - "127.0.0.1:${WEB_SERVICE_PORT:-8001}:8001"
+    networks: [weather-net]
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "python", "-c", "import urllib.request; urllib.request.urlopen('http://127.0.0.1:8001/health', timeout=2)"]
+      interval: 10s
+      timeout: 4s
+      retries: 5
+networks:
+  weather-net:
+    driver: bridge
+volumes:
+  weather-data:
