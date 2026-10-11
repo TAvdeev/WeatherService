@@ -9,7 +9,7 @@
 <body>
   <header class="topbar"><a class="brand" href="/" aria-label="Погода и климат — главная"><span class="brand-icon" aria-hidden="true">☀</span>Погода и климат</a><a class="header-link" href="#source">Об источнике <span aria-hidden="true">↗</span></a></header>
   <main>
-    <section class="intro"><div><p class="eyebrow">ВАШ ГОРОД. ПОГОДА СЕЙЧАС.</p><h1>Узнайте, что за окном.</h1><p class="lede">Найдите город, посмотрите текущую погоду<br class="desktop"> и сохраните её в истории наблюдений.</p></div><span class="project-tag">Практикум · Docker Compose</span></section>
+    <section class="intro"><div><p class="eyebrow">ВАШ ГОРОД. ПОГОДА СЕЙЧАС.</p><h1>Узнайте, что за окном.</h1><p class="lede">Найдите город, посмотрите текущую погоду<br class="desktop"> и сохраните её в истории наблюдений.</p></div></section>
     <div id="notice" class="notice" role="status" aria-live="polite" hidden></div>
     <div class="weather-layout">
       <section class="panel search-panel" aria-labelledby="search-title">
@@ -45,7 +45,7 @@
     </section>
     <section id="source" class="source-section"><span class="source-icon" aria-hidden="true">↗</span><div><h2>Откуда берётся погода</h2><p>Источник — официальный API <a href="https://open-meteo.com/" target="_blank" rel="noopener noreferrer">Open-Meteo</a>. Сервис объединяет погодные модели национальных метеослужб. Текущие условия рассчитаны моделями и могут отличаться от показаний ближайшей метеостанции. Названия и координаты городов предоставлены <a href="https://www.geonames.org/" target="_blank" rel="noopener noreferrer">GeoNames</a>.</p><p>Погодные данные: <a href="https://creativecommons.org/licenses/by/4.0/" target="_blank" rel="noopener noreferrer">CC BY 4.0</a>. Значения приведены в °C и м/с. Учебные записи в истории отмечены отдельно.</p></div></section>
   </main>
-  <footer><span>Погода и климат</span><span>Учебный проект · Вариант 1</span></footer>
+  <footer><span>Погода и климат</span></footer>
   <dialog id="edit-dialog"><form id="note-form"><h2>Заметка к запросу</h2><p id="note-city"></p><label for="note-text">Ваши наблюдения</label><textarea id="note-text" maxlength="500" rows="5" placeholder="Например, перед прогулкой"></textarea><p class="hint">До 500 символов.</p><p id="note-error" class="dialog-error" role="alert" hidden></p><div class="dialog-actions"><button id="cancel-note" type="button" class="secondary">Отмена</button><button type="submit" class="primary">Сохранить</button></div></form></dialog>
   <dialog id="delete-dialog"><h2>Удалить запрос?</h2><p id="delete-city"></p><p>Запись и заметка будут удалены из истории.</p><p id="delete-error" class="dialog-error" role="alert" hidden></p><div class="dialog-actions"><button id="cancel-delete" class="secondary" type="button">Отмена</button><button id="confirm-delete" class="danger" type="button">Удалить</button></div></dialog>
 </body>
