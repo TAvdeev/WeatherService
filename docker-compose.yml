@@ -3,7 +3,7 @@ services:
   frontend:
     build: ./frontend
     ports:
-      - "127.0.0.1:${FRONTEND_PORT:-8080}:80"
+      - "0.0.0.0:${FRONTEND_PORT:-8080}:80"
     depends_on:
       backend:
         condition: service_healthy
@@ -24,7 +24,7 @@ services:
       DB_PASSWORD: ${DB_PASSWORD:-weather_local_lab}
       WEB_SERVICE_URL: http://web-service:8001
     ports:
-      - "127.0.0.1:${BACKEND_PORT:-8000}:8000"
+      - "0.0.0.0:${BACKEND_PORT:-8000}:8000"
     depends_on:
       db:
         condition: service_healthy
@@ -61,7 +61,7 @@ services:
       GEOCODING_URL: https://geocoding-api.open-meteo.com/v1
       WEATHER_URL: https://api.open-meteo.com/v1/forecast
     ports:
-      - "127.0.0.1:${WEB_SERVICE_PORT:-8001}:8001"
+      - "0.0.0.0:${WEB_SERVICE_PORT:-8001}:8001"
     networks: [weather-net]
     restart: unless-stopped
     healthcheck:
